@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: CustomerCare
+  labels:
+    app: CustomerCare
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: CustomerCare
+  template:
+    metadata:
+      labels:
+        app: CustomerCare
+    spec:
+      containers:
+        - name: CustomerCare
+          image: username/CustomerCare:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
